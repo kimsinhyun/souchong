@@ -14,12 +14,12 @@ from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-APPS_DIR = os.path.join(BASE_DIR, 'souchong')
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+# APPS_DIR = os.path.join(BASE_DIR, 'souchong')
+# TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
-print(BASE_DIR)
-print(APPS_DIR)
-print(TEMPLATES_DIR)
+# print(BASE_DIR)
+# print(APPS_DIR)
+# print(TEMPLATES_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-21ct7f5zzqvtrutju1@ne2fvh(%c^2v#hh^x5o-32bt-gf_f4$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -60,7 +60,7 @@ ROOT_URLCONF = 'souchong.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,8 +84,31 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'djongo',
+    #     'ENFORCE_SCHEMA': True,
+    #     'LOGGING':{
+    #         'version':1,
+    #         'loggers':{
+    #             'djongo':{
+    #                 'level': 'DEBUG',
+    #                 'propogate': False,
+    #             }
+    #         },
+    #     },
+    #     'NAME':'wanted',
+    #     'CLIENT':{
+    #         'host':'165.132.172.93',
+    #         'port':27017,
+    #         'username':'thwhd1',
+    #         'password':'thwhd1',
+    #         'authSource':'admin',
+    #         'authMechanism':'SCRAM-SHA-1'
+    #     }
+    # }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

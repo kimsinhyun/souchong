@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from chart.views import ChartView
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('chart/',include('chart.urls')),
+    # path('chart/',include('chart.urls')),
+    path("",ChartView.as_view(), name='index')
     
 ]
