@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(f"BASE_DIR={BASE_DIR}")
 # APPS_DIR = os.path.join(BASE_DIR, 'souchong')
 # TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
@@ -43,7 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chart.apps.ChartConfig',
+    'account.apps.AccountConfig',
+    # 'crispy_forms',
+    # 'crispy_bootstrap5',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS='bootstrap5'
+CRISPY_TEMPLATE_PACKS='bootstrap5'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,7 +91,7 @@ WSGI_APPLICATION = 'souchong.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'db.sqlite3',
     }
     # 'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
@@ -144,9 +153,31 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static'),
+    os.path.join(BASE_DIR,'media'),
+]
+
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')   #cdn 은 aws와 같은 클라우드에 배포했을 경우를 시뮬레이팅하기 위한 용도
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')     #cdn -> content delivery network
+
+TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'account.Account'
+# ATUHENTICATION_BACKENDS= (
+#     'django.contrib.auth.backends',
+#     'account.backends.CaseInsensitiveModelBackend'
+# )
+
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# LOGIN_REDIRECT_URL = '/home'
+# LOGOUT_REDIRECT_URL = '/login'
+
+# SESSION_COOKIE_SECURE  = False
