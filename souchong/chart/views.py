@@ -19,8 +19,7 @@ def test(request):
     #     print(d.num_users)
     return render(request, 'charts/chart.html', {"data":data})
     
-def home(request):
-    return render(request,'main/home.html')
+
 # class ChartView(TemplateView):
 #     template_name = 'chart/chart.html'
     

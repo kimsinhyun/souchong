@@ -5,5 +5,4 @@ from . import views
 urlpatterns = [
     # path('doughnut/',ChartView.as_view(), name='index'),
     path('doughnut/',views.test, name='doughnut'),
-    path('home/',views.home, name='home'),
 ]

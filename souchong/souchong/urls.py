@@ -18,12 +18,16 @@ from django.conf.urls.static import static
 
 from django.contrib import admin
 from django.urls import path, include
+from account.views import register_view, home
 # from chart.views import ChartView
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', include('django.contrib.auth.urls')),
-    path('accounts/',include('account.urls')),
+    path('admin/', admin.site.urls),
+    path('home/', home, name='home'),
+    path('register/',register_view, name='register'),
     path('chart/',include('chart.urls')),
+
     # path("chart/",ChartView.as_view(), name='index')
 ]
 if settings.DEBUG:
