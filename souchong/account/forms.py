@@ -36,3 +36,35 @@ class AccountAuthenticationForm(forms.ModelForm):
             password    = self.cleaned_data['password']
             if not authenticate(email=email, password=password):
                 raise forms.ValidationError("Invalid Login")
+            
+class AccountUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ('username','email','profile_image','hide_email')
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        try:
+            account = Account.objects.exclude(pk=self.instance.pk).get(email=email)
+        except Account.DoesNotExist:
+            return email
+        raise forms.ValidationError(f"Email {email} is already in use")
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        try:
+            account = Account.objects.exclude(pk=self.instance.pk).get(username=username)
+        except Account.DoesNotExist:
+            return username
+        raise forms.ValidationError(f"User {username} is already in user")
+    # save overriding
+    def save(self, commit=True):
+        # 1. db를 읽어 Obejct를 생성
+        # 2. 이후 일련의 데이터들에 작업을 마친 후 (여기서는 db의 값을 바꿔줌, Update profile) -> .
+        # 3. 다시 Save
+        account = super(AccountUpdateForm, self).save(commit=False)
+        account.username = self.cleaned_data["username"]
+        account.email = self.cleaned_data["email"]
+        account.profile_image = self.cleaned_data['profile_image']
+        account.hide_email = self.cleaned_data['hide_email']
+        if commit:
+            account.save()
+        return account

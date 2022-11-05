@@ -181,3 +181,4 @@ AUTH_USER_MODEL = 'account.Account'
 
 # SESSION_COOKIE_SECURE  = False
 BASE_URL = "http://165.132.172.93:8000"
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10*1024*1024  #10 MB (max media size)

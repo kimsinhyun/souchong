@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegistrationForm, AccountAuthenticationForm
+from .forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from .models import Account
 from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
@@ -93,6 +93,42 @@ def account_view(request, *args, **kwargs):
         context['is_friend'] = is_friend
         context['BASE_URL'] = settings.BASE_URL
         return render(request, "account/account.html", context)
+
+def edit_account_view(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return redirect("login")
+    user_id = kwargs.get("user_id")
+    try:
+        account = Account.objects.get(pk=user_id)
+    except Account.DoesNotExist:
+        return HttpResponse("거부된 요청입니다")
+    if account.pk != request.user.pk:
+        return HttpResponse("거부된 요청입니다 (다른 유저의 프로필입니다)")
+    context = {}
+    if request.POST:
+        form = AccountUpdateForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            # account -> namespace
+            # view -> account/urls.py에 있는 name="view"
+            return redirect("account:view",user_id=account.pk)
+    # POST가 아닌 GET일 경우 (loading page) 혹은 valid하지 않으면 있던 값을 그대로 넣어져 있는 form 제공
+    else:
+        # 잘 못 입력했을 경우 이전에 적은 내용이 안 사라지게
+        form = AccountUpdateForm(
+                                    initial = {
+                                        "id": account.pk,
+                                        "email":account.email,
+                                        "username":account.username,
+                                        "profile_image":account.profile_image,
+                                        "hide_email":account.hide_email,
+                                    }
+                            )
+        context['form'] = form
+        # limie size of the image
+    context['DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
+    return render(request, "account/edit_account.html", context)
+
 
 # def sign_in(request):
 #     if request.method == "POST":

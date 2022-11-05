@@ -31,13 +31,13 @@ urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls', namespace='account')),
+    path('chart/',include('chart.urls')),
+    
+
+    # =================log in & password==========================
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('register/',register_view, name='register'),
-    path('chart/',include('chart.urls')),
-
-    # path("chart/",ChartView.as_view(), name='index')
-    
     #password 내장 함수  -> setting 안에 EMAIL_BACKEND 설정 추가 현재는 develop mode이므로 fake email 인증 시스템(console)에 찍힘
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),  #내장 template
@@ -51,6 +51,7 @@ urlpatterns = [
     
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='main/password_reset/password_reset_complete.html'),
      name='password_reset_complete'),
+    # =================log in & password==========================
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
