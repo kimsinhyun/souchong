@@ -19,10 +19,6 @@ print(f"BASE_DIR={BASE_DIR}")
 # APPS_DIR = os.path.join(BASE_DIR, 'souchong')
 # TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
-# print(BASE_DIR)
-# print(APPS_DIR)
-# print(TEMPLATES_DIR)
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -34,7 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # During development only
 # Application definition
 
 INSTALLED_APPS = [
@@ -153,15 +150,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATICFILES_DIRS = [
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [                        #Debuging 용도로만 사용 됨.
     os.path.join(BASE_DIR,'static'),
     os.path.join(BASE_DIR,'media'),
 ]
-
-STATIC_URL = '/static/'
 print(STATIC_URL)
 MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')   #cdn 은 aws와 같은 클라우드에 배포했을 경우를 시뮬레이팅하기 위한 용도
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')   #(실서버용 static root)cdn 은 aws와 같은 클라우드에 배포했을 경우를 시뮬레이팅하기 위한 용도
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')     #cdn -> content delivery network
 
 TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
@@ -182,3 +180,4 @@ AUTH_USER_MODEL = 'account.Account'
 # LOGOUT_REDIRECT_URL = '/login'
 
 # SESSION_COOKIE_SECURE  = False
+BASE_URL = "http://165.132.172.93:8000"
