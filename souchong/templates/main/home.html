@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+{% block title %}Home Page{% endblock title %}
+{% block content %}
+<h1>Home Page!</h1>
+{% comment %} {% for d in data %}
+    <tr>
+        <td>{{d.editor_name}}</td>
+    </tr> 
+{% endfor %}
+{% for d in data %}
+    <tr>
+        <td>{{d.num_users}}</td>
+    </tr> 
+{% endfor %} {% endcomment %}
+{% endblock  %}

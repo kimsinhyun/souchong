@@ -13,13 +13,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-APPS_DIR = os.path.join(BASE_DIR, 'souchong')
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
-
-print(BASE_DIR)
-print(APPS_DIR)
-print(TEMPLATES_DIR)
+# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(f"BASE_DIR={BASE_DIR}")
+# APPS_DIR = os.path.join(BASE_DIR, 'souchong')
+# TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -30,9 +28,10 @@ SECRET_KEY = 'django-insecure-21ct7f5zzqvtrutju1@ne2fvh(%c^2v#hh^x5o-32bt-gf_f4$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
-
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # During development only
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,7 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chart.apps.ChartConfig',
+    'account.apps.AccountConfig',
+    # 'crispy_forms',
+    # 'crispy_bootstrap5',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS='bootstrap5'
+CRISPY_TEMPLATE_PACKS='bootstrap5'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,7 +66,7 @@ ROOT_URLCONF = 'souchong.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,10 +88,33 @@ WSGI_APPLICATION = 'souchong.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'db.sqlite3',
     }
+    # 'default': {
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'djongo',
+    #     'ENFORCE_SCHEMA': True,
+    #     'LOGGING':{
+    #         'version':1,
+    #         'loggers':{
+    #             'djongo':{
+    #                 'level': 'DEBUG',
+    #                 'propogate': False,
+    #             }
+    #         },
+    #     },
+    #     'NAME':'wanted',
+    #     'CLIENT':{
+    #         'host':'165.132.172.93',
+    #         'port':27017,
+    #         'username':'thwhd1',
+    #         'password':'thwhd1',
+    #         'authSource':'admin',
+    #         'authMechanism':'SCRAM-SHA-1'
+    #     }
+    # }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -121,9 +150,34 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [                        #Debuging 용도로만 사용 됨.
+    os.path.join(BASE_DIR,'static'),
+    os.path.join(BASE_DIR,'media'),
+]
+print(STATIC_URL)
+MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')   #(실서버용 static root)cdn 은 aws와 같은 클라우드에 배포했을 경우를 시뮬레이팅하기 위한 용도
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')     #cdn -> content delivery network
+
+TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'account.Account'
+# ATUHENTICATION_BACKENDS= (
+#     'django.contrib.auth.backends',
+#     'account.backends.CaseInsensitiveModelBackend'
+# )
+
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# LOGIN_REDIRECT_URL = '/home'
+# LOGOUT_REDIRECT_URL = '/login'
+
+# SESSION_COOKIE_SECURE  = False
+BASE_URL = "http://165.132.172.93:8000"

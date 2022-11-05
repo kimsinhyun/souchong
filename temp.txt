@@ -1,0 +1,16 @@
+pyspark --conf "spark.mongodb.input.uri=mongodb://127.0.0.1/wanted.wanted?readPreference=primaryPreferred"               --conf "spark.mongodb.output.uri=mongodb://127.0.0.1/wanted.wanted"               --packages org.mongodb.spark:mongo-spark-connector_2.12:3.0.1
+
+https://malibu:10002/
+
+my_spark = SparkSession \
+    .builder \
+    .appName("myApp") \
+    .config("spark.mongodb.input.uri", "mongodb://165.132.172.93/wanted.wanted") \
+    .config("spark.mongodb.output.uri", "mongodb://165.132.172.93/test.wanted") \
+    .getOrCreate()
+
+
+# context = super().get_context_data(**kwargs)
+        # context["qs"] = Editors.objects.all()
+        # return context
+        
