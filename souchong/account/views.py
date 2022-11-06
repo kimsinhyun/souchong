@@ -4,6 +4,16 @@ from .forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateFor
 from .models import Account
 from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
+from django.core.files.storage import default_storage, FileSystemStorage
+import os
+import cv2
+import json
+import base64
+import requests
+from django.core import files
+from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
+from account.models import Account 
+TEMP_PROFILE_IMAGE_NAME = 'temp_profile_image.png'
 # Create your views here.
 
 def home(request):
@@ -15,8 +25,6 @@ def register_view(request, *args, **kwargs):
         return HttpResponse(f"You are already authenticated as {user.email}")
     context = {}
     if request.POST:
-        print(f"request={request}")
-        print(f"request.POST={request.POST}")
         form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -94,40 +102,107 @@ def account_view(request, *args, **kwargs):
         context['BASE_URL'] = settings.BASE_URL
         return render(request, "account/account.html", context)
 
-def edit_account_view(request, *args, **kwargs):
-    if not request.user.is_authenticated:
-        return redirect("login")
-    user_id = kwargs.get("user_id")
+def save_temp_profile_image_from_base64String(imageString, user):
+    INCORRECT_PADDING_EXCEPTION = "Incorrect padding"
     try:
-        account = Account.objects.get(pk=user_id)
-    except Account.DoesNotExist:
-        return HttpResponse("거부된 요청입니다")
-    if account.pk != request.user.pk:
-        return HttpResponse("거부된 요청입니다 (다른 유저의 프로필입니다)")
-    context = {}
-    if request.POST:
-        form = AccountUpdateForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            # account -> namespace
-            # view -> account/urls.py에 있는 name="view"
-            return redirect("account:view",user_id=account.pk)
-    # POST가 아닌 GET일 경우 (loading page) 혹은 valid하지 않으면 있던 값을 그대로 넣어져 있는 form 제공
-    else:
-        # 잘 못 입력했을 경우 이전에 적은 내용이 안 사라지게
-        form = AccountUpdateForm(
-                                    initial = {
-                                        "id": account.pk,
-                                        "email":account.email,
-                                        "username":account.username,
-                                        "profile_image":account.profile_image,
-                                        "hide_email":account.hide_email,
-                                    }
-                            )
-        context['form'] = form
-        # limie size of the image
-    context['DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
-    return render(request, "account/edit_account.html", context)
+        if not os.path.exists(settings.TEMP):
+            os.mkdir(settings.TEMP)
+        if not os.path.exists(settings.TEMP + "/" + str(user.pk)):
+            os.mkdir(settings.TEMP + "/" + str(user.pk))
+        url = os.path.join(settings.TEMP + "/" + str(user.pk),TEMP_PROFILE_IMAGE_NAME)
+        print(f"url={url}")
+        storage = FileSystemStorage(location=url)
+        image = base64.b64decode(imageString)
+        with storage.open('', 'wb+') as destination:
+            destination.write(image)
+            destination.close()
+        return url
+    except Exception as e:
+        print("exception: " + str(e))
+        # workaround for an issue I found
+        if str(e) == INCORRECT_PADDING_EXCEPTION:
+            imageString += "=" * ((4 - len(imageString) % 4) % 4)
+            return save_temp_profile_image_from_base64String(imageString, user)
+    return None
+
+def crop_image(request, *args, **kwargs):
+	payload = {}
+	user = request.user
+	if request.POST and user.is_authenticated:
+		try:
+			imageString = request.POST.get("image")
+			url = save_temp_profile_image_from_base64String(imageString, user)
+			img = cv2.imread(url)
+
+			cropX = int(float(str(request.POST.get("cropX"))))
+			cropY = int(float(str(request.POST.get("cropY"))))
+			cropWidth = int(float(str(request.POST.get("cropWidth"))))
+			cropHeight = int(float(str(request.POST.get("cropHeight"))))
+			if cropX < 0:
+				cropX = 0
+			if cropY < 0: # There is a bug with cropperjs. y can be negative.
+				cropY = 0
+			crop_img = img[cropY:cropY+cropHeight, cropX:cropX+cropWidth]
+
+			cv2.imwrite(url, crop_img)
+
+			# delete the old image
+			user.profile_image.delete()
+
+			# Save the cropped image to user model
+			user.profile_image.save("profile_image.png", files.File(open(url, 'rb')))
+			user.save()
+
+			payload['result'] = "success"
+			payload['cropped_profile_image'] = user.profile_image.url
+
+			# delete temp file
+			os.remove(url)
+			
+		except Exception as e:
+			print("exception: " + str(e))
+			payload['result'] = "error"
+			payload['exception'] = str(e)
+	return HttpResponse(json.dumps(payload), content_type="application/json")
+
+
+def edit_account_view(request, *args, **kwargs):
+	if not request.user.is_authenticated:
+		return redirect("login")
+	user_id = kwargs.get("user_id")
+	account = Account.objects.get(pk=user_id)
+	if account.pk != request.user.pk:
+		return HttpResponse("You cannot edit someone elses profile.")
+	context = {}
+	if request.POST:
+		form = AccountUpdateForm(request.POST, request.FILES, instance=request.user)
+		if form.is_valid():
+			form.save()
+			return redirect("account:view", user_id=account.pk)
+		else:
+			form = AccountUpdateForm(request.POST, instance=request.user,
+				initial={
+					"id": account.pk,
+					"email": account.email, 
+					"username": account.username,
+					"profile_image": account.profile_image,
+					"hide_email": account.hide_email,
+				}
+			)
+			context['form'] = form
+	else:
+		form = AccountUpdateForm(
+			initial={
+					"id": account.pk,
+					"email": account.email, 
+					"username": account.username,
+					"profile_image": account.profile_image,
+					"hide_email": account.hide_email,
+				}
+			)
+		context['form'] = form
+	context['DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
+	return render(request, "account/edit_account.html", context)
 
 
 # def sign_in(request):
