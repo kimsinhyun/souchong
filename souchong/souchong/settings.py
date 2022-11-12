@@ -157,7 +157,6 @@ STATICFILES_DIRS = [                        #Debuging 용도로만 사용 됨.
     os.path.join(BASE_DIR,'static'),
     os.path.join(BASE_DIR,'media'),
 ]
-print(STATIC_URL)
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')   #(실서버용 static root)cdn 은 aws와 같은 클라우드에 배포했을 경우를 시뮬레이팅하기 위한 용도
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')     #cdn -> content delivery network

@@ -1,15 +1,126 @@
 {% extends 'main/base.html' %}
+{% load static %}
 {% block title %}Home Page{% endblock title %}
 {% block content %}
-<h1>Home Page!</h1>
-{% comment %} {% for d in data %}
-    <tr>
-        <td>{{d.editor_name}}</td>
-    </tr> 
-{% endfor %}
-{% for d in data %}
-    <tr>
-        <td>{{d.num_users}}</td>
-    </tr> 
-{% endfor %} {% endcomment %}
+<body>
+   
+
+<div class="jumbotron">
+   <div class="jumbotron__container">
+      <div class="jumbotron__intro">
+         <h1 class="homePageBodyFont bold">취준에 데이터를 더하다</h1>
+         <div class="search-form">
+
+         </div>
+         <div class="jumbotron__bulb">
+            <div class="bulb">
+               <img src="{% static 'imgs/bulb_2.png' %}">
+            </div>
+            <div class="bulb-shadow" >
+               <img src="{% static 'imgs/bulb-shadow.svg' %}" alt="">
+            </div>
+         </div>
+      </div>
+      
+      
+      
+   </div> 
+</div>
+</body>
+<style>
+   body {
+      overflow-x: hidden;
+   }
+   .jumbotron {
+      color: #fff;
+      padding: 180px 0 800px;
+      position: relative;
+   }
+   *, ::after, ::before {
+      box-sizing: border-box;
+   }
+   .jumbotron:before {
+		background: transparent linear-gradient(0deg,#30b1f2,#1f5afe 49%,#140f9f) 0 0 no-repeat padding-box;
+		border-bottom-left-radius: 50%;
+		border-bottom-right-radius: 50%;
+		bottom: 0;
+		content: "";
+		left: -64%;
+		position: absolute;
+		right: -64%;
+		top: -110px;
+      z-index: -1;
+	}
+   .jumbotron__container {
+      display: flex;
+      margin: 0 auto;
+      max-width: 1000px;
+      padding: 0 15px;
+      position: relative;
+      width: 100%;
+   }
+   .jumbotron__intro {
+      max-width: 673px;
+   }
+   .jumbotron__bulb {
+      position: absolute;
+      right: -90px;
+      top: -130px;
+   }
+   .bulb {
+      animation: bulbFloat 5s ease-in-out infinite;
+      margin-bottom: 30px;
+   }
+   @keyframes bulbFloat {
+      0% { transform :  translateY(0px) ;}
+      50% { transform : translateY(20px) ;}
+      100% { transform : translateY(0px) ;}
+   }
+   .bulb-shadow {
+      animation: shadowScaling 5s ease-in-out infinite;
+      margin-left: 2%;
+      width: 68%;
+   }
+   @keyframes shadowScaling {
+      0% { transform :  scale(0.6) ;}
+      50% { transform : scale(0.8) ;}
+      100% { transform : scale(0.6) ;}
+   }
+   .search-form {
+      transition: width .3s;
+      z-index: 10001;
+   }
+   .search-form {
+      background-color: #fff;
+      border-radius: 40px;
+      box-shadow: 5px 5px 40px rgb(31 90 254 / 21%);
+      color: #3e404d;
+      display: flex;
+      height: 70px;
+      line-height: 70px;
+      margin: 12px auto 22px;
+      padding: 0 36px;
+      position: relative;
+      width: 90%;
+      z-index: 1;
+  }
+   .title {
+      fill-rule: evenodd;
+      fill: #3e404d;
+   }
+   h1 {
+      display: block;
+      font-size: 4em;
+      margin-block-start: 0.67em;
+      margin-block-end: 0.67em;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+      font-weight: bold;
+   }
+   *, :after, :before {
+      box-sizing: inherit;
+   }
+   
+</style>
+
 {% endblock  %}
