@@ -181,3 +181,22 @@ AUTH_USER_MODEL = 'account.Account'
 # SESSION_COOKIE_SECURE  = False
 BASE_URL = "http://165.132.172.93:8000"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10*1024*1024  #10 MB (max media size)
+
+
+# ===================SparkSession===================
+import pyspark
+from pyspark.sql import SparkSession, SQLContext
+from pyspark.context import SparkContext
+import pyspark.sql.functions as sql_fun
+
+conf = pyspark.SparkConf().set('spark.jars.packages','org.mongodb.spark:mongo-spark-connector_2.12:3.0.1')
+sc = SparkContext(conf=conf).getOrCreate()
+sqlContext = SQLContext(sc)
+my_spark = SparkSession \
+    .builder \
+    .master('local')\
+    .appName("myApp") \
+    .config("spark.mongodb.input.uri", "mongodb://thwhd1:thwhd1@165.132.172.93/wanted.wanted?readPreference=primaryPreferred") \
+    .config("spark.mongodb.output.uri", "mongodb://thwhd1:thwhd1@165.132.172.93/test.wanted") \
+    .getOrCreate()
+df  = my_spark.read.format("mongo").option("uri","mongodb://165.132.172.93/wanted.wanted").load()
