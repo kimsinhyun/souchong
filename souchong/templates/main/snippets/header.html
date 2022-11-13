@@ -5,7 +5,9 @@
    <!-- MEDIUM+ SCREENS -->
    <div class="d-none d-md-flex flex-row my-auto flex-grow-1 align-items-center ">
       <h5 class="mr-3 font-weight-normal justify-content-start">
-         <a class="p-2 text-white" href="{% url 'home' %}">JobSight</a>
+         <a class="headerLogoFont bold" style="text-decoration: none; color:white" href="{% url 'home' %}">
+            JobSight
+         </a>
       </h5>
       {% comment %} <form class="search-bar justify-content-start">
          <input type="text" class="form-control" name="q" id="id_q_large" placeholder="Search...">
@@ -18,18 +20,18 @@
                      <div class="btn-group dropleft">
                         <img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{{request.user.profile_image.url}}" alt="codingwithmitch logo" width="40" height="40">
                         <div class="dropdown-menu" aria-labelledby="id_profile_links">
-                           <a class="mx-2 dropdown-item" href="{% url 'account:view' user_id=request.user.id %}">Account</a>
-                           <a class="mx-2 dropdown-item" href="{% url 'logout' %}">Logout</a>
+                           <a class="mx-2 dropdown-item" href="{% url 'account:view' user_id=request.user.id %}">내 계정</a>
+                           <a class="mx-2 dropdown-item" href="{% url 'logout' %}">로그아웃</a>
                         </div>
                      </div>
                   </div>
                </div>
             {% else %}
                <a class="mx-2 btn btn-primary shadow-none" href="{% url 'login' %}">
-                  <p class="headerNavFont medium">Login</p> 
+                  <p class="headerNavFont medium">로그인</p> 
                </a>
                <a class="mx-2 btn btn-primary shadow-none" href="{% url 'register' %}">
-                  <p class="headerNavFont medium">Register</p> 
+                  <p class="headerNavFont medium">회원가입</p> 
                </a>
                <a class="mx-2 btn btn-primary shadow-none" href="#">
                   <p class="headerNavFont medium">인사이트</p> 
@@ -42,7 +44,7 @@
    <!-- SMALL SCREENS -->
    <div class="d-flex d-md-none flex-column my-auto align-items-center">
       <h5 class="font-weight-normal">
-      <a class="p-2 text-dark" href="{% url 'home' %}">Home</a>
+      <a class="p-2 text-dark" href="{% url 'home' %}">JobSight</a>
       </h5>
       <form class="search-bar justify-content-start" >
          <input type="text" class="form-control" name="q" id="id_q_small" placeholder="Search...">
@@ -55,18 +57,18 @@
                   <div class="btn-group dropleft">
                      <img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{{request.user.profile_image.url}}" alt="codingwithmitch logo" width="40" height="40">
                      <div class="dropdown-menu" aria-labelledby="id_profile_links">
-                        <a class="dropdown-item" href="#">Account</a>
-                        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        <a class="dropdown-item" href="#">내 계정</a>
+                        <a class="dropdown-item" href="{% url 'logout' %}">로그아웃</a>
                      </div>
                   </div>
                </div>
             </div>
             {% else %}
                <a class="mx-2 btn btn-primary shadow-none" href="{% url 'login' %}">
-                  <p class="headerNavFont medium">Login</p> 
+                  <p class="headerNavFont medium">로그인</p> 
                </a>
                <a class="mx-2 btn btn-primary shadow-none" href="{% url 'register' %}">
-                  <p class="headerNavFont medium">Register</p> 
+                  <p class="headerNavFont medium">회원가입</p> 
                </a>
                <a class="mx-2 btn btn-primary shadow-none" href="#">
                   <p class="headerNavFont medium">인사이트</p> 
