@@ -13,4 +13,5 @@ my_spark = SparkSession \
 # context = super().get_context_data(**kwargs)
         # context["qs"] = Editors.objects.all()
         # return context
-        
+    
+sudo systemctl status mongod

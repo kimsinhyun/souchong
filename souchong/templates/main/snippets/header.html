@@ -33,8 +33,10 @@
                <a class="mx-2 btn btn-primary shadow-none" href="{% url 'register' %}">
                   <p class="headerNavFont medium">회원가입</p> 
                </a>
-               <a class="mx-2 btn btn-primary shadow-none" href="#">
-                  <p class="headerNavFont medium">인사이트</p> 
+               <a class="mx-2 btn btn-primary shadow-none" href="{% url 'chart:doughnut' %}">
+                  <p class="headerNavFont medium">
+                     인사이트
+                  </p> 
                </a>
             {% endif %} 
       </div>

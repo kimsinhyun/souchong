@@ -31,7 +31,7 @@ urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls', namespace='account')),
-    path('chart/',include('chart.urls')),
+    path('chart/',   include('chart.urls', namespace="chart")),
     
 
     # =================log in & password==========================
