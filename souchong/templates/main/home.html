@@ -9,7 +9,7 @@
    <div class="jumbotron__container">
       <div class="jumbotron__intro">
          <h1 class="homePageBodyFont bold">취준에 데이터를 더하다</h1>
-         <div class="search-form">
+         <div class="search-form" id="search-stuff-div">
             <span class="search-form__placeholder" data-with-tags="+ Add More">Search for</span>
             <ul class="search-form__placeholder-items" id="items">
                <li class='rotate-items'><p class="homePageBodyFont">회사</p></li>
@@ -20,6 +20,9 @@
                <input class="search-form__input" type="text" autocomplete="off" 
                         id="search-stuff" >
             </label>
+            <button type="button" class='search-form__submit'>
+               <img src="{% static 'imgs/search-icon.jpg' %}">
+            </button>
          </div>
          <div class="jumbotron__bulb">
             <div class="bulb">
@@ -135,18 +138,18 @@
       filter: alpha(opacity=0)
    }
    .rotate-items:nth-child(1){
-      -webkit-animation:   rotate 30s 0s infinite linear;
-      animation:           rotate 30s 0s infinite linear;
+      -webkit-animation:   rotate 15s 0s infinite linear;
+      animation:           rotate 15s 0s infinite linear;
       color: green;
    }
    .rotate-items:nth-child(2){
-      -webkit-animation:   rotate 30s 10s infinite linear;
-      animation:           rotate 30s 10s infinite linear;
+      -webkit-animation:   rotate 15s 5s infinite linear;
+      animation:           rotate 15s 5s infinite linear;
       color: red;
    }
    .rotate-items:nth-child(3){
-      -webkit-animation:   rotate 30s 20s infinite linear;
-      animation:           rotate 30s 20s infinite linear;
+      -webkit-animation:   rotate 15s 10s infinite linear;
+      animation:           rotate 15s 10s infinite linear;
       color: blue;
    }
    @-webkit-keyframes "rotate" {
@@ -195,14 +198,32 @@
    }
 
    .search-form:focus-within{
-      animation : width 1s ease-in-out 1;
+      animation : width-focus 0.5s ease-in-out 1;
       animation-fill-mode: forwards;
       transform-origin: left;
    }
-   @keyframes width{
-      0% { transform :  scaleX(1) ;}
-      100% { transform :  scaleX(1.2) ;}
-
+   .search-form:not(:focus-within){
+      animation: width-out 0.5s ease-in-out 1;
+      animation-fill-mode:forwards;
+      transform-origin: left;
+   }
+   @keyframes width-focus{
+      0% { width : 90%;}
+      100% { width : 120%;}
+   }
+   @keyframes width-out{
+      0% { width : 120%;}
+      100% { width : 90%;}
+   }
+   .search-form__submit{
+      background: 0 0;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      position: absolute;
+      right: 1px;
+      top: 0px;
+      margin-right: 10px;
    }
    button, input {
       overflow: visible;
@@ -236,5 +257,9 @@
          console.log("inputBox")
          document.getElementById('items').style.visibility='visible';
       })
+      var inputBoxDiv = document.getElementById('search-stuff-div')
+      inputBoxDiv.addEventListener('focusout'), function(){
+         inputBoxDiv.style.width = 130
+      }
 </script>
 {% endblock  %}
