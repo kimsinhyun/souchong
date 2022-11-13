@@ -10,7 +10,16 @@
       <div class="jumbotron__intro">
          <h1 class="homePageBodyFont bold">취준에 데이터를 더하다</h1>
          <div class="search-form">
-
+            <span class="search-form__placeholder" data-with-tags="+ Add More">Search for</span>
+            <ul class="search-form__placeholder-items" id="items">
+               <li class='rotate-items'><p class="homePageBodyFont">회사</p></li>
+               <li class='rotate-items'><p class="homePageBodyFont">기술스택</p></li>
+               <li class='rotate-items'><p class="homePageBodyFont">키워드</p></li>
+            </ul>
+            <label>
+               <input class="search-form__input" type="text" autocomplete="off" 
+                        id="search-stuff" >
+            </label>
          </div>
          <div class="jumbotron__bulb">
             <div class="bulb">
@@ -87,8 +96,12 @@
       100% { transform : scale(0.6) ;}
    }
    .search-form {
-      transition: width .3s;
+      transition: transform  .3s;
       z-index: 10001;
+   }
+   .search:target {
+      transform : scale(1.5);
+      display: none;
    }
    .search-form {
       background-color: #fff;
@@ -104,6 +117,96 @@
       width: 90%;
       z-index: 1;
   }
+  .search-form__placeholder {
+      font-size: 20px;
+   }
+   .search-form__placeholder-items {
+      display: inline-block;
+      list-style: none;
+      margin-left: 10px;
+      margin-top: 3px;
+      padding: 0;
+      font-size: 20px;
+   }
+   .rotate-items{
+      position: absolute;
+      opacity: 0;
+      -moz-opacity: 0;
+      filter: alpha(opacity=0)
+   }
+   .rotate-items:nth-child(1){
+      -webkit-animation:   rotate 30s 0s infinite linear;
+      animation:           rotate 30s 0s infinite linear;
+      color: green;
+   }
+   .rotate-items:nth-child(2){
+      -webkit-animation:   rotate 30s 10s infinite linear;
+      animation:           rotate 30s 10s infinite linear;
+      color: red;
+   }
+   .rotate-items:nth-child(3){
+      -webkit-animation:   rotate 30s 20s infinite linear;
+      animation:           rotate 30s 20s infinite linear;
+      color: blue;
+   }
+   @-webkit-keyframes "rotate" {
+      0% {
+        opacity: 0;
+      }
+      2% {
+        opacity: 1;
+      }
+      31% {
+        opacity: 1;
+      }
+      33% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0;
+      }
+     }
+     
+      @keyframes "rotate" {
+      0% {
+        opacity: 0;
+      }
+      2% {
+        opacity: 1;
+      }
+      31% {
+        opacity: 1;
+      }
+      33% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0;
+      }
+   }
+   .search-form__input:not(.search-form__input--mobile) {
+      background-color: transparent;
+      border: none;
+      color: #4e5166;
+      font-size: 20px;
+      outline: inherit;
+      width: 100%;
+      z-index: 1;
+   }
+
+   .search-form:focus-within{
+      animation : width 1s ease-in-out 1;
+      animation-fill-mode: forwards;
+      transform-origin: left;
+   }
+   @keyframes width{
+      0% { transform :  scaleX(1) ;}
+      100% { transform :  scaleX(1.2) ;}
+
+   }
+   button, input {
+      overflow: visible;
+   }
    .title {
       fill-rule: evenodd;
       fill: #3e404d;
@@ -122,5 +225,16 @@
    }
    
 </style>
-
+<script>
+      var inputBox = document.getElementById('search-stuff');
+      // some action
+      inputBox.addEventListener('focus', function() {
+         console.log("inputBox")
+         document.getElementById('items').style.visibility='hidden';
+      })
+      inputBox.addEventListener('focusout', function() {
+         console.log("inputBox")
+         document.getElementById('items').style.visibility='visible';
+      })
+</script>
 {% endblock  %}
