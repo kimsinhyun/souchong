@@ -16,6 +16,24 @@
             {% comment %} <p class="top100Skills">{{ skill }}</p> {% endcomment %}
         </div>
     </div>
+    <div class="skills-header">
+        <div class="skills-header__rank">
+            <h5 class="homePageBodyFont"> 랭크 </h5>
+        </div>
+        <div class="skills-header__title">
+            <h5 class="homePageBodyFont"> 스킬 </h5>
+        </div>
+        <div class="skills-header__numbers">
+            <h5 class="homePageBodyFont"> 채용공고 수 </h5>
+        </div>
+        <div class="skills-header__companies">
+            <h5 class="homePageBodyFont"> 회사 수 </h5>
+        </div>
+        <div class="skills-header__stats">
+            <h5 class="homePageBodyFont"> Info </h5>
+        </div>
+
+    </div>
     {% for skill in skills %}
         {% for skillName, skillCount in skill.items %}
             <div class="row justify-content-md-center p-1">
@@ -27,6 +45,46 @@
 </div>
 
 <style>
+    .skills-header {
+        background-color: #f7f8ff;
+        border-radius: 8px;
+        color: #898ca3;
+        display: flex;
+        height: 46px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    
+    .skills-header>* {
+        margin-bottom: auto;
+        margin-top: auto;
+        text-align: center;
+    }
+    .skills-header__rank {
+        min-width: 48px;
+        padding-top: 13px;
+    }
+    .skills-header__title {
+        flex: 1;
+        padding-top: 13px;
+        padding-left: 85px;
+        text-align: left;
+    }
+    .skills-header__numbers {
+        margin-left: 12px;
+        margin-right: 50px;
+        padding-top: 13px;
+    }
+    .skills-header__companies{
+        margin-left: 12px;
+        margin-right: 12px;
+        padding-top: 13px;
+    }
+    .skills-header__stats {
+        margin-left: 16px;
+        min-width: 96px;
+        padding-top: 13px;
+    }
     .background {
         background: url("/static/imgs/top100SkillsBackground.png") no-repeat center top;
         height: 235px;
@@ -38,9 +96,11 @@
     }
     .container-fluid p {
         font-size: 40px;
+        padding-left: 50px;
+        padding-right: 50px;
         font-weight: 400;
         line-height: 70px;
-        margin: 0 auto 0 16px;
+        margin: 20 auto 0 16px;
     }
 </style>
 
