@@ -1,12 +1,47 @@
 {% extends 'main/base.html' %}
 {% load static %}
-{% block title %}Home Page{% endblock title %}
+{% block title %}Top 100 Skills{% endblock title %}
 {% block content %}
 
-{% for t in test %}
-    {% for k,v in t.items %}
-        {{ k }} : {{ v }}
-    {% endfor %}
-{% endfor %}
+{% comment %} <div class="background">
+</div> {% endcomment %}
 
-{% endblock  %}
+<div class="container-fluid">
+    <div class="row justify-content-md-center  p-5">
+        <div class="col-md-auto">
+            <img class="img img-responsive search-terms-icons" src="{% static 'imgs/testBulb.svg' %}" alt="Skills">
+        </div>
+        <div class="col-md-auto">
+            <p class="top100Skills">Top 100 Skills</p>
+            {% comment %} <p class="top100Skills">{{ skill }}</p> {% endcomment %}
+        </div>
+    </div>
+    {% for skill in skills %}
+        {% for skillName, skillCount in skill.items %}
+            <div class="row justify-content-md-center p-1">
+                {% include 'cards/skillRankCard.html' with skillName=skillName%}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+</div>
+
+<style>
+    .background {
+        background: url("/static/imgs/top100SkillsBackground.png") no-repeat center top;
+        height: 235px;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 80%;
+        opacity: 0.5;
+    }
+    .container-fluid p {
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 70px;
+        margin: 0 auto 0 16px;
+    }
+</style>
+
+{% endblock %}

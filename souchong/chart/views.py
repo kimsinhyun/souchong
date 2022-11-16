@@ -8,11 +8,16 @@ from pyspark.sql.functions import count
 # Create your views here.
 
 def top100Skills(request):
-    # temp = settings.DF.select(explode(settings.DF.skill_stacks)).groupBy("col").agg(count("col").alias("skillCount"))
-    # temp = temp.filter(temp.col != "").sort(desc('skillCount')).take(6)
-    test = [{"test1": 1}, {"test2": 2},{"test3": 3}]
-    return render(request, 'charts/top100Skills.html', {"test":test })
+    temp = settings.DF.select(explode(settings.DF.skill_stacks)).groupBy("col").agg(count("col").alias("skillCount"))
+    temp = temp.filter(temp.col != "").sort(desc('skillCount')).take(100)
+    skills = []
+    for i in temp:
+        skills.append({i.col:i.skillCount})
+    return render(request, 'charts/top100Skills.html', {"skills":skills})
     
+def skillDetail(request):
+    skill = "test"
+    return render(request, 'charts/skillDetail.html', {"skill":skill})
 
 # class ChartView(TemplateView):
 #     template_name = 'chart/chart.html'
