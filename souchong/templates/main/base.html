@@ -6,6 +6,7 @@
 <head>
 	<!-- Required meta tags -->
     <meta charset="utf-8">
+	<title>{% block title %}{% endblock %}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
 	<link href="https://fonts.googleapis.com/css2?family=Material+Icons"  rel="stylesheet">
@@ -42,16 +43,15 @@
 	}
 </style>
 <div class="main">
-	{% block content %}
-
-	{% endblock content %}
+	<script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+	{% block scripts %}	{% endblock scripts %}
+	{% block content %}	{% endblock content %}
 </div>
 <!-- End Body -->
 
 {% include 'main/snippets/footer.html' %}
 
 {% comment %} <script src="{% static 'bootstrap/js/jquery.min.js' %}"></script> {% endcomment %}
-<script src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="{% static 'cropperjs/dist/cropper.min.js' %}"></script>

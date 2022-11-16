@@ -1,5 +1,5 @@
 {% extends 'main/base.html'%}
-
+<h1>test</h1>
 {%block scripts%}
 <script>
 $(document).ready(function(){
@@ -7,10 +7,10 @@ $(document).ready(function(){
         var myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: [{%for d in data%}'{{d.editor_name}}',{%endfor%}],
+                labels: [{%for d in data%}'{{d.col}}',{%endfor%}],
                 datasets: [{
                     label: '# of users',
-                    data: [{%for d in data%}{{d.num_users}},{%endfor%}],
+                    data: [{%for d in data%}{{d.skillCount}},{%endfor%}],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)', 
                         'rgba(54, 162, 235, 0.2)',
@@ -43,6 +43,9 @@ $(document).ready(function(){
 {%endblock scripts%}
 
 {%block content%}
-<canvas id="myChart" width="400" height="100"></canvas>  
+    <canvas id="myChart" width="400" height="100"></canvas>
+    {% for key in temp.keys() %}
+        {{ key }}
+    {% endfor %}
 {%endblock content%}
 

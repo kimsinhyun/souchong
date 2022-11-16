@@ -1,23 +1,17 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
-from .models import Editors
+from account.models import Account
 from urllib import parse
-import pandas as pd
-import pymongo
-import findspark
-import pyspark
-from pyspark.sql import SparkSession, SQLContext
-from pyspark.context import SparkContext
-import pyspark.sql.functions as sql_fun
-
+from django.conf import settings
+from pyspark.sql.functions import explode
+from pyspark.sql.functions import desc
+from pyspark.sql.functions import count
 # Create your views here.
 
-def test(request):
-    data = Editors.objects.all()
-    # for d in data:
-    #     print(d.editor_name)
-    #     print(d.num_users)
-    return render(request, 'charts/chart.html', {"data":data})
+def top100Skills(request):
+    # temp = settings.DF.select(explode(settings.DF.skill_stacks)).groupBy("col").agg(count("col").alias("skillCount"))
+    # temp = temp.filter(temp.col != "").sort(desc('skillCount')).take(6)
+    test = [{"test1": 1}, {"test2": 2},{"test3": 3}]
+    return render(request, 'charts/top100Skills.html', {"test":test })
     
 
 # class ChartView(TemplateView):

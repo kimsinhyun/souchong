@@ -5,9 +5,15 @@
    <!-- MEDIUM+ SCREENS -->
    <div class="d-none d-md-flex flex-row my-auto flex-grow-1 align-items-center ">
       <h5 class="mr-3 font-weight-normal justify-content-start">
+         {% if request.resolver_match.view_name == "home" %}
          <a class="headerLogoFont bold" style="text-decoration: none; color:white" href="{% url 'home' %}">
             JobSight
          </a>
+         {% else %}
+         <a class="headerLogoFont bold" style="text-decoration: none; color:blue" href="{% url 'home' %}">
+            JobSight
+         </a>
+         {% endif %}
       </h5>
       {% comment %} <form class="search-bar justify-content-start">
          <input type="text" class="form-control" name="q" id="id_q_large" placeholder="Search...">
@@ -26,6 +32,11 @@
                      </div>
                   </div>
                </div>
+               <a class="mx-2 btn btn-primary shadow-none" href="{% url 'chart:top100Skills' %}">
+                  <p class="headerNavFont medium">
+                     인사이트
+                  </p> 
+               </a>
             {% else %}
                <a class="mx-2 btn btn-primary shadow-none" href="{% url 'login' %}">
                   <p class="headerNavFont medium">로그인</p> 
@@ -33,7 +44,7 @@
                <a class="mx-2 btn btn-primary shadow-none" href="{% url 'register' %}">
                   <p class="headerNavFont medium">회원가입</p> 
                </a>
-               <a class="mx-2 btn btn-primary shadow-none" href="{% url 'chart:doughnut' %}">
+               <a class="mx-2 btn btn-primary shadow-none" href="{% url 'chart:top100Skills' %}">
                   <p class="headerNavFont medium">
                      인사이트
                   </p> 
