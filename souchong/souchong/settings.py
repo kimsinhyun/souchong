@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chart.apps.ChartConfig',
     'account.apps.AccountConfig',
+    'mathfilters',
     # 'crispy_forms',
     # 'crispy_bootstrap5',
 ]
@@ -200,3 +201,23 @@ my_spark = SparkSession \
     .config("spark.mongodb.output.uri", "mongodb://thwhd1:thwhd1@165.132.172.93/test.wanted") \
     .getOrCreate()
 DF  = my_spark.read.format("mongo").option("uri","mongodb://165.132.172.93/wanted.wanted").load()
+
+
+from pyspark.sql.functions import explode, count, desc, countDistinct, lower, monotonically_increasing_id
+temp = DF.select(explode(DF.skill_stacks).alias("skill"), "company_name")
+skillCount = temp.groupBy("skill")\
+                .agg(count("skill").alias("skillCount"))\
+                .filter(temp.skill != "")\
+                .sort(desc("skillCount"))
+skillCount.collect()
+
+companyCount = temp.groupBy("skill")\
+            .agg(countDistinct("company_name").alias("companyCount"))\
+            .filter(temp.skill != "")\
+            .sort(desc("companyCount"))
+companyCount.collect()                
+JOINED_DF = skillCount.join(companyCount, ['skill'], 'outer')
+JOINED_DF = JOINED_DF\
+                    .filter(JOINED_DF.skill!="")\
+                    .sort(desc("skillCount"))
+JOINED_DF = JOINED_DF.withColumn("index", monotonically_increasing_id()+1)

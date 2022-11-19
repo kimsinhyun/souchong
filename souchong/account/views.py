@@ -203,26 +203,3 @@ def edit_account_view(request, *args, **kwargs):
 		context['form'] = form
 	context['DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
 	return render(request, "account/edit_account.html", context)
-
-
-# def sign_in(request):
-#     if request.method == "POST":
-#         name = request.POST['name']
-#         password = request.POST['password']
-#         user = authenticate(request, name=name, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return redirect('/chart/home')
-#         else:
-#             return render(request, 'registration/login.html')
-    
-# def sign_up(request):
-#     if request.method == "POST":
-#         form = RegisterForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             return redirect('/home')
-#     else:
-#         form = RegisterForm()
-#     return render(request, 'registration/sign_up.html', {'form':form})

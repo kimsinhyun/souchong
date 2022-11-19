@@ -1,23 +1,89 @@
 from django.shortcuts import render
-from account.models import Account
-from urllib import parse
 from django.conf import settings
-from pyspark.sql.functions import explode
-from pyspark.sql.functions import desc
-from pyspark.sql.functions import count
+from pyspark.sql.functions import explode, count, desc, countDistinct, lower, monotonically_increasing_id
+from django.http import HttpResponse
 # Create your views here.
 
 def top100Skills(request):
-    temp = settings.DF.select(explode(settings.DF.skill_stacks)).groupBy("col").agg(count("col").alias("skillCount"))
-    temp = temp.filter(temp.col != "").sort(desc('skillCount')).take(100)
+    #  각 스킬별 채용 공고에 나타난 횟수
+    # temp = settings.DF.select(explode(settings.DF.skill_stacks).alias("skill"), "company_name")
+    # skillCount = temp.groupBy("skill")\
+    #                 .agg(count("skill").alias("skillCount"))\
+    #                 .filter(temp.skill != "")\
+    #                 .sort(desc("skillCount"))
+    # skillCount.collect()
+
+    # companyCount = temp.groupBy("skill")\
+    #             .agg(countDistinct("company_name").alias("companyCount"))\
+    #             .filter(temp.skill != "")\
+    #             .sort(desc("companyCount"))
+    # companyCount.collect()                
+    # joined_df = skillCount.join(companyCount, ['skill'], 'outer')
+    # joined_df = joined_df\
+    #                     .filter(joined_df.skill!="")\
+    #                     .sort(desc("skillCount")).take(100)
+    joined_df = settings.JOINED_DF.take(100)
+    # joined_df = joined_df.withColumn("index", monotonically_increasing_id()+1)
     skills = []
-    for i in temp:
-        skills.append({i.col:i.skillCount})
+    for idx,i in enumerate(joined_df):
+        if i.skill.find("/"):
+            temp = i.__getattr__("skill").replace("/","and")
+            skills.append([idx+1,temp,i.skillCount,i.companyCount])
+            continue
+        skills.append([idx+1,i.skill,i.skillCount,i.companyCount])
+
+    
+    # 각 스킬별 회사의 요구사항, Distinct Count
     return render(request, 'charts/top100Skills.html', {"skills":skills})
     
-def skillDetail(request):
-    skill = "test"
-    return render(request, 'charts/skillDetail.html', {"skill":skill})
+def searchResult(request):
+    if "skill" in request.GET:
+        searchedSkillName = request.GET['skill']
+
+        joined_df = settings.JOINED_DF
+        searchResult = joined_df.filter(lower(joined_df.skill).contains(searchedSkillName.lower()))\
+                                .sort(desc("skillCount"))\
+                                .collect()
+        
+        skills = []
+        for idx, i in enumerate(searchResult):
+            if i.skill.find("/"):
+                temp = i.__getattr__("skill").replace("/","and")
+                skills.append([idx+1,temp,i.skillCount,i.companyCount])
+                continue
+            skills.append([idx+1,i.skill,i.skillCount,i.companyCount])
+        return render(request, 'charts/searchResult.html', {"skills":skills, "searchedSkillName":searchedSkillName})
+        
+
+
+    
+
+def test(request):
+    skill = ""
+    if 'skill' in request.GET:
+        skill = request.GET['skill']
+    return HttpResponse(skill)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # class ChartView(TemplateView):
 #     template_name = 'chart/chart.html'

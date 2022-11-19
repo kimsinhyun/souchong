@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}SkillDetail{% endblock title %}
 {% block content %}
-{% load mathfilters %}
+
 <body>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
@@ -11,58 +11,66 @@
         <section class="stats-section skill">
             <img class="img img-responsive skill__logo" src="{% static 'imgs/testBulb.svg' %}" alt="SQL">
             <div class="skill__intro" style="width: 1200px">
-                <h1 class="skill__title">
-					{% if rank == 1 %} 🥇
-					{% elif rank == 2 %} 🥈
-					{% elif rank == 3 %} 🥉
-					{% endif %}
-					{{ skill }}</h1>
-                {% comment %} <span class="skill__category">{{ skill }} 설명</span> {% endcomment %}
+                <h1 class="skill__title">{{ skillName }}</h1>
+                <span class="skill__category">SQL 설명</span>
             </div>
-            <span class="skill__rank skill--placer skill--gold">{{ rank }}</span>
+            <span class="skill__rank skill--placer skill--gold">1</span>
             <span class="skill__previous-rank ">
                 <i class="mdi mdi-18px mdi-checkbox-blank-circle"></i>
             </span>
             <div class="performance-numbers performance-numbers--jobs">
                 <div class="performance-numbers__header">
                     <span class="performance-numbers__count">{{ skillCount }}</span>
+                    <span class="performance-numbers__notation performance-numbers__notation--jobs">-914</span>
                 </div>
                 <span class="performance-numbers__label">모집중인 공고</span>
             </div>
             <div class="performance-numbers performance-numbers--companies performance-numbers--after">
                 <div class="performance-numbers__header">
-                	<span class="performance-numbers__count">{{ companyCount }}</span>
+                <span class="performance-numbers__count">{{ companyCount }}</span>
+                <span class="performance-numbers__notation performance-numbers__notation--companies">-122</span>
                 </div>
                 <span class="performance-numbers__label">회사 수</span>
+            </div>
+            <div class="performance-numbers performance-numbers--locations performance-numbers--after">
+                <div class="performance-numbers__header">
+                    <span class="performance-numbers__count">827</span>
+                    <span class="performance-numbers__notation performance-numbers__notation--locations">-10</span>
+                </div>
+                <span class="performance-numbers__label">위치</span>
             </div>
         </section>
         <section class="stats-section demand-over-time">
             <div class="stats-section__summary">
                 <div class="stats-section__intro">
-                    <h3 class="stats-section__title">마감되는 공고 수</h3>
-                    <p class="stats-section__subtitle">지난 2달간 종료된 공고 수, 앞으로 1달간 종료될 공고 수</p>
+                    <h3 class="stats-section__title">공고 수의 변화</h3>
+                    <p class="stats-section__subtitle">지난 2달간의 변화</p>
                 </div>
                 <div class="performance-numbers">
-                    <span class="performance-numbers__count">{{ skillCount }}</span>
+                    <span class="performance-numbers__count">18860</span>
                     <span class="performance-numbers__label">모집중인 공고</span>
                 </div>
+                <div class="performance-numbers stats-section__performance">
+                    <span class="performance-numbers__count performance-numbers__count--change">
+                    <span>-8680</span>
+                    <span>-31.5 %</span>
+                    </span>
+                    <span class="performance-numbers__label">2달간 변화량/변화율</span>
+                 </div>
             </div>
-			<div class="bar-chart">
+			<div>
 				<canvas id="myChart"></canvas>
 			</div>
 			<script>
 				var ctx = document.getElementById("myChart").getContext('2d');
 				var myChart = new Chart(ctx, {
-					type: 'line',
+					type: 'bar',
 					data: {
-						labels: [{%for d in job_end%}'{{d.0}}',{%endfor%}],
+						labels: ["이", "재", "찬", "화", "이", "팅"],
 						datasets: [{
-							label: '마감 공고 수',
-							data: [{%for d in job_end%}{{d.1}},{%endfor%}],
-							backgroundColor: 'rgba(158, 27, 254, 0.2)',
-							borderColor: 'rgba(158, 27, 254, 0.8)',
-							fill: false,
-							borderWidth: 2
+							data: [12, 19, 3, 5, 2, 3],
+							backgroundColor: 'rgba(255, 99, 132, 0.2)',
+							borderWidth: 1
 						}]
 					},
 					options: {
@@ -76,9 +84,7 @@
 						}
 					}
 				});
-			</script>
-			<div>
-				<h5>상시모집: {{sangsi.0.1}}</h5>
+				</script>
         </section>
 
 
@@ -86,92 +92,77 @@
 			<div class="col-xl-6">
 				<section class="stats-section related-skills">
 					<h3 class="stats-section__title">연관된 다른 기술 스택</h3>
-					<p class="stats-section__subtitle">어떤 스택이 -{{ skill }}-과 가장 밀접한 관계를 유지하는가?</p>
+					<p class="stats-section__subtitle">어떤 스택이 -SQL-과 가장 밀접한 관계를 유지하는가?</p>
 					<section class="progress-item">
 					<span class="progress-item__rank">1</span>
 					<div class="progress-item__intro">
-					<h5 title="related1">
-						<a href="{% url 'chart:skillDetail' skill=relatedSkills.0.0 %}">{{relatedSkills.0.0}}</a>
-					</h5>
+					<h5 title="Python">{{relatedSkills.0.0}}</h5>
+					
 					</div>
-					<div id="related_skills__1" class="progress-item__graph" data-percentage="31.5"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width={{ relatedSkills.0.1|mul:4.3 }} rx="8" ry="8" x="16" y="0"></rect></svg></div>
+					<div id="related_skills__1" class="progress-item__graph" data-percentage="31.5"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width="135.45" rx="8" ry="8" x="16" y="0"></rect></svg></div>
 					<span class="progress-item__percentage">{{relatedSkills.0.1}}%</span>
+					<a class="clip" href="https://jobtensor.com/Python-Jobs" title="https://jobtensor.com/Python-Jobs"><i class="mdi mdi-24px
+												 mdi-link"></i></a>
 					</section>
-
 					<section class="progress-item">
 					<span class="progress-item__rank">2</span>
 					<div class="progress-item__intro">
-					<h5 title="related2">
-						<a href="{% url 'chart:skillDetail' skill=relatedSkills.1.0 %}">{{relatedSkills.1.0}}</a>
-					</h5>
+					<h5 title="Cloud">{{relatedSkills.1.0}}</h5>
+					
 					</div>
-					<div id="related_skills__2" class="progress-item__graph" data-percentage="23.2"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width={{ relatedSkills.1.1|mul:4.3 }} rx="8" ry="8" x="16" y="0"></rect></svg></div>
+					<div id="related_skills__2" class="progress-item__graph" data-percentage="23.2"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width="99.76" rx="8" ry="8" x="16" y="0"></rect></svg></div>
 					<span class="progress-item__percentage">{{relatedSkills.1.1}}%</span>
+					<a class="clip" href="https://jobtensor.com/Cloud-Jobs" title="https://jobtensor.com/Cloud-Jobs"><i class="mdi mdi-24px
+												 mdi-link"></i></a>
 					</section>
-
 					<section class="progress-item">
 					<span class="progress-item__rank">3</span>
 					<div class="progress-item__intro">
-					<h5 title="related3">
-						<a href="{% url 'chart:skillDetail' skill=relatedSkills.2.0 %}">{{relatedSkills.2.0}}</a>
-					</h5>
+					<h5 title="Azure">{{relatedSkills.2.0}}</h5>
+					
 					</div>
-					<div id="related_skills__3" class="progress-item__graph" data-percentage="22.7"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width={{ relatedSkills.2.1|mul:4.3 }} rx="8" ry="8" x="16" y="0"></rect></svg></div>
+					<div id="related_skills__3" class="progress-item__graph" data-percentage="22.7"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width="97.61" rx="8" ry="8" x="16" y="0"></rect></svg></div>
 					<span class="progress-item__percentage">{{relatedSkills.2.1}}%</span>
+					<a class="clip" href="https://jobtensor.com/Azure-Jobs" title="https://jobtensor.com/Azure-Jobs"><i class="mdi mdi-24px
+												 mdi-link"></i></a>
 					</section>
-
 					<section class="progress-item">
 					<span class="progress-item__rank">4</span>
 					<div class="progress-item__intro">
-					<h5 title="related4">
-						<a href="{% url 'chart:skillDetail' skill=relatedSkills.3.0 %}">{{relatedSkills.3.0}}</a>
-					</h5>
-					</div>
-					<div id="related_skills__4" class="progress-item__graph" data-percentage="18.3"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width={{ relatedSkills.3.1|mul:4.3 }} rx="8" ry="8" x="16" y="0"></rect></svg></div>
-					<span class="progress-item__percentage">{{relatedSkills.3.1}}%</span>
-					</section>
+					<h5 title="Power BI">{{relatedSkills.3.0}}</h5>
 					
+					</div>
+					<div id="related_skills__4" class="progress-item__graph" data-percentage="18.3"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width="78.69" rx="8" ry="8" x="16" y="0"></rect></svg></div>
+					<span class="progress-item__percentage">{{relatedSkills.3.1}}3%</span>
+					<a class="clip" href="https://jobtensor.com/Power-BI-Jobs" title="https://jobtensor.com/Power-BI-Jobs"><i class="mdi mdi-24px
+												 mdi-link"></i></a>
+					</section>
 					<section class="progress-item">
 					<span class="progress-item__rank">5</span>
 					<div class="progress-item__intro">
-					<h5 title="related5">
-						<a href="{% url 'chart:skillDetail' skill=relatedSkills.4.0 %}">{{relatedSkills.4.0}}</a>
-					</h5>
+					<h5 title="Agile">{{relatedSkills.4.0}}</h5>
+					
 					</div>
-					<div id="related_skills__5" class="progress-item__graph" data-percentage="16.5"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width={{ relatedSkills.4.1|mul:4.3 }} rx="8" ry="8" x="16" y="0"></rect></svg></div>
+					<div id="related_skills__5" class="progress-item__graph" data-percentage="16.5"><svg height="16" width="462"><rect rx="8" ry="8" fill="#aaa" height="16" width="430" x="16" y="0"></rect><rect class="progress-active" fill="#333" height="16" width="70.95" rx="8" ry="8" x="16" y="0"></rect></svg></div>
 					<span class="progress-item__percentage">{{relatedSkills.4.1}}%</span>
+					<a class="clip" href="https://jobtensor.com/Agile-Jobs" title="https://jobtensor.com/Agile-Jobs"><i class="mdi mdi-24px
+												 mdi-link"></i></a>
 					</section>
 				</section>
 			</div>
 			<div class="col-xl-6">
 				<section class="stats-section skillsets">
 					<h3 class="stats-section__title">인기 있는 skillset</h3>
-					<p class="stats-section__subtitle">-{{ skill }}- 과 가장 어울리는 skillset은?</p>
+					<p class="stats-section__subtitle">-SQL- 과 가장 어울리는 skillset은?</p>
 					<div class="skillsets-group">
 						<section class="skillset">
 							<div class="skillset__container">
 								<h5>Skillset 1</h5>
 								<ul class="search-tags">
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=skill %}">
-											{{ skill }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.0 %}">
-											{{ popularSkillList.0 }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.1 %}">
-											{{ popularSkillList.1 }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.2 %}">
-											{{ popularSkillList.2 }}
-										</a>
-									</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">{{ skillName }}</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">TSQL</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">SSRS</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">SSIS</li>
 									<li class="search-skill search-tag--more search-tag--no-hover" style="display: none;"></li>
 								</ul>
 							</div>
@@ -181,26 +172,10 @@
 							<div class="skillset__container">
 								<h5>Skillset 2</h5>
 								<ul class="search-tags">
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=skill %}">
-											{{ skill }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.3 %}">
-											{{ popularSkillList.3 }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.4 %}">
-											{{ popularSkillList.4 }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.5 %}">
-											{{ popularSkillList.5 }}
-										</a>
-									</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">{{ skillName }}</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">SQL Server</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">TSQL</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">SSIS</li>
 									<li class="search-skill search-tag--more search-tag--no-hover" style="display: none;"></li>
 								</ul>
 							</div>
@@ -210,26 +185,10 @@
 							<div class="skillset__container">
 								<h5>Skillset 3</h5>
 								<ul class="search-tags">
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=skill %}">
-											{{ skill }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.6 %}">
-											{{ popularSkillList.6 }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.7 %}">
-											{{ popularSkillList.7 }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.8 %}">
-											{{ popularSkillList.8 }}
-										</a>
-									</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">{{ skillName }}</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">C#</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">.NET</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">ASP.NET</li>
 									<li class="search-skill search-tag--more search-tag--no-hover" style="display: none;"></li>
 								</ul>
 							</div>
@@ -239,26 +198,10 @@
 							<div class="skillset__container">
 								<h5>Skillset 4</h5>
 								<ul class="search-tags">
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=skill %}">
-											{{ skill }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.9 %}">
-											{{ popularSkillList.9 }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.10 %}">
-											{{ popularSkillList.10 }}
-										</a>
-									</li>
-									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">
-										<a href="{% url 'chart:skillDetail' skill=popularSkillList.11 %}">
-											{{ popularSkillList.11 }}
-										</a>
-									</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">{{ skillName }}</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">Python</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">R</li>
+									<li class="search-skill search-tag--bordered-2px search-tag--no-hover search-skill--bordered search-skill--highlighted">SAS</li>
 									<li class="search-skill search-tag--more search-tag--no-hover" style="display: none;"></li>
 								</ul>
 							</div>
@@ -272,15 +215,6 @@
 </main>
 
 <style>
-	a{
-		color: 	#9e1bfe;
-		text-decoration: none;
-	}
-	.bar-chart{
-		display:block;
-		width:1400px;
-		height:350px;
-	}
     .skill {
         display: flex;
     }
@@ -290,7 +224,7 @@
         border-top-right-radius: 16px;
         border-bottom-right-radius: 16px;
         border-bottom-left-radius: 16px;
-        box-shadow: 10px 10px 16px rgb(91 99 146 / 20%);
+        box-shadow: 0 0 16px rgb(91 99 146 / 20%);
         height: 100%;
         margin-bottom: 24px;
         padding: 32px;

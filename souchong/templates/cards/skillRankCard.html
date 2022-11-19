@@ -1,37 +1,39 @@
 {% load static %}
 <section class="stats-section skill">
-    <span class="skill__rank skill--placer skill--gold">1</span>
+    <span class="skill__rank skill--placer skill--gold">{{ rank }}</span>
     <img class="img img-responsive skill__logo" src="{% static 'imgs/testBulb.svg' %}" alt="SQL">
     <div class="skill__intro">
-        <h1 class="skill__title homePageBodyFont">{{ skillName }}</h1>
-        <span class="skill__category">Query Language</span>
+        <h1 class="skill__title homePageBodyFont">
+        {% if rank == 1 %} 🥇
+        {% elif rank == 2 %} 🥈
+        {% elif rank == 3 %} 🥉
+        {% endif %}
+       {{ skillName }}</h1>
+        {% comment %} <span class="skill__category">Query Language</span> {% endcomment %}
     </div>
     <span class="skill__previous-rank ">
         {% comment %} <i class="mdi mdi-18px mdi-checkbox-blank-circle"></i> {% endcomment %}
     </span>
     <div class="performance-numbers performance-numbers--jobs" style="min-width: 109.641px;">
         <div class="performance-numbers__header">
-            <span class="performance-numbers__count homePageBodyFont">18860</span>
-            <span class="performance-numbers__notation performance-numbers__notation--jobs homePageBodyFont">-914</span>
+            <span class="performance-numbers__count homePageBodyFont">{{ skillCount }}</span>
+            <span class="performance-numbers__notation performance-numbers__notation--jobs homePageBodyFont">0</span>
         </div>
         <span class="performance-numbers__label homePageBodyFont">Active Jobs</span>
     </div>
     <div class="performance-numbers performance-numbers--companies performance-numbers--after">
         <div class="performance-numbers__header">
-        <span class="performance-numbers__count homePageBodyFont">4486</span>
-        <span class="performance-numbers__notation performance-numbers__notation--companies">-122</span>
+        <span class="performance-numbers__count homePageBodyFont">{{ companyCount }}</span>
+        <span class="performance-numbers__notation performance-numbers__notation--companies">0</span>
         </div>
         <span class="performance-numbers__label homePageBodyFont">Companies</span>
     </div>
     <div class="performance-numbers performance-numbers--locations performance-numbers--after">
-        <a class="btn btn-primary " href="#">
+        <a class="btn btn-primary " href="{% url 'chart:skillDetail' skill=skillName %}">
+        {% comment %} <a class="btn btn-primary " href="/chart/skillDetailTest/{{ skill }}"> {% endcomment %}
             <span class="headerNavFont medium">Info</sp> 
         </a>
-        {% comment %} <div class="performance-numbers__header">
-            <span class="performance-numbers__count">827</span>
-            <span class="performance-numbers__notation performance-numbers__notation--locations">-10</span>
-        </div>
-        <span class="performance-numbers__label">Locations</span> {% endcomment %}
+        
     </div>
 </section>
 

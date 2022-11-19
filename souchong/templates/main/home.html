@@ -18,8 +18,10 @@
                <li class='rotate-items'><p class="homePageBodyFont">키워드</p></li>
             </ul>
             <label>
-               <input class="search-form__input" type="text" autocomplete="off" 
-                        id="search-stuff" >
+               <form action="{% url 'chart:searchResult' %}">
+                  <input class="search-form__input" type="text" autocomplete="off" 
+                           id="search-stuff", name="skill" >
+               </form>
             </label>
             <button type="button" class='search-form__submit'>
                <img src="{% static 'imgs/search-icon.jpg' %}">
@@ -222,8 +224,8 @@
       cursor: pointer;
       outline: none;
       position: absolute;
-      right: 1px;
-      top: 0px;
+      right: -2px;
+      top: -4px;
       margin-right: 10px;
    }
    button, input {
