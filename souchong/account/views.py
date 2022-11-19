@@ -16,10 +16,19 @@ from account.models import Account
 TEMP_PROFILE_IMAGE_NAME = 'temp_profile_image.png'
 # Create your views here.
 
+# 메일 인증
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.core.mail import EmailMessage
+from .tokens import account_activation_token
+from django.utils.encoding import force_bytes, force_str
+
 def home(request):
     return render(request,'main/home.html')
 
-def register_view(request, *args, **kwargs):
+def register_view(request):
     user = request.user
     if user.is_authenticated: #이미 로그인 되어 있으면
         return HttpResponse(f"You are already authenticated as {user.email}")
@@ -31,15 +40,49 @@ def register_view(request, *args, **kwargs):
             email = form.cleaned_data.get('email').lower()
             raw_password = form.cleaned_data.get('password1')   #clean_email 등 함수 호출
             account = authenticate(email=email, password=raw_password)
-            login(request, account)
-            destination = get_redirect_if_exist(request)
-            if destination:  #if desitination != None
-                return redirect(destination)
-            return redirect('home')
-        else:
-            context['registration_form'] = form
-    return render(request, 'account/register.html', context)
+            user = account
+            current_site = get_current_site(request)
+            message = render_to_string('account/user_activate_email.html',
+                                       {
+                                            'user': user,
+                                            'domain': current_site.domain,
+                                            'uid': urlsafe_base64_encode(force_bytes(user.id)).encode().decode(),
+                                            'token': account_activation_token.make_token(user),
+                                       })
+            mail_subject = "[JonSight] 회원가입 인증 메일입니다."
+            user_email = account.email
+            email = EmailMessage(mail_subject,message, to=[user_email])
+            email.send()
+            print(email)
+            return HttpResponse(
+                '<div style="font-size: 40px; width: 100%; height:100%; display:flex; text-align:center; '
+                'justify-content: center; align-items: center;">'
+                '입력하신 이메일<span>로 인증 링크가 전송되었습니다.</span>'
+                '</div>'
+            )
+        return redirect('home')
+    return render(request, 'account/register.html')
+            # login(request, account)
+    #         destination = get_redirect_if_exist(request)
+    #         if destination:  #if desitination != None
+    #             return redirect(destination)
+    #         return redirect('home')
+    #     else:
+    #         context['registration_form'] = form
+    # return render(request, 'account/register.html', context)
 
+
+def activate(request, uid64, token):
+    uid = force_str(urlsafe_base64_decode(uid64))
+    user = Account.objects.get(pk=uid)
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('home')
+    else:
+        return HttpResponse('비정상적인 접근입니다.')
+    
 def logout_view(request):
     logout(request)
     return redirect("home")
