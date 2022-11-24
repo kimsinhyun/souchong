@@ -93,6 +93,8 @@ def skillDetail(request,skill):
             break
         for popularSkill in i.skill_stacks:
             if popularSkill != skill and popularSkill not in popularSkillList:
+                if popularSkill.find("/"):
+                    popularSkill = popularSkill.replace("/","and")
                 popularSkillList.append(popularSkill)
                 if len(popularSkillList) == popularSkillListSize:
                     flag = True

@@ -53,14 +53,19 @@ def register_view(request):
             user_email = account.email
             email = EmailMessage(mail_subject,message, to=[user_email])
             email.send()
-            print(email)
+            # print(email)
             return HttpResponse(
                 '<div style="font-size: 40px; width: 100%; height:100%; display:flex; text-align:center; '
                 'justify-content: center; align-items: center;">'
                 '입력하신 이메일<span>로 인증 링크가 전송되었습니다.</span>'
                 '</div>'
             )
-        return redirect('home')
+        else:
+            print("Email STH Wrong")
+            context['registration_form'] = form
+        return render(request, 'account/register.html', context)
+            # return redirect('home')
+            
     return render(request, 'account/register.html')
             # login(request, account)
     #         destination = get_redirect_if_exist(request)

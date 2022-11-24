@@ -12,12 +12,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+
+# 숨김 정보들
+from . import mySettings
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print(f"BASE_DIR={BASE_DIR}")
-# APPS_DIR = os.path.join(BASE_DIR, 'souchong')
-# TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -108,7 +109,7 @@ DATABASES = {
     #     },
     #     'NAME':'wanted',
     #     'CLIENT':{
-    #         'host':'165.132.172.93',
+    #         'host':'---가림-----',
     #         'port':27017,
     #         'username':'thwhd1',
     #         'password':'thwhd1',
@@ -181,54 +182,54 @@ AUTH_USER_MODEL = 'account.Account'
 # LOGOUT_REDIRECT_URL = '/login'
 
 # SESSION_COOKIE_SECURE  = False
-BASE_URL = "http://165.132.172.93:8000"
+BASE_URL = mySettings.BASE_URL
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10*1024*1024  #10 MB (max media size)
 # ===================메일 인증===================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com' 		 # 메일 호스트 서버
 EMAIL_PORT = '587' 			 # 서버 포트
-EMAIL_HOST_USER = 'kimsinhyun415@gmail.com' 	 # 우리가 사용할 Gmail
-EMAIL_HOST_PASSWORD = 'afvtjiyzgulpcwrw'		 # 우리가 사용할 Gmail pw
+EMAIL_HOST_USER = mySettings.EMAIL_HOST_USER 	 # 우리가 사용할 Gmail
+EMAIL_HOST_PASSWORD = mySettings.EMAIL_HOST_PASSWORD		 # 우리가 사용할 Gmail pw
 EMAIL_USE_TLS = True			 # TLS 보안 설정
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER	 # 응답 메일 관련 설정
 
 
 
 
-# # ===================SparkSession===================
-# import pyspark
-# from pyspark.sql import SparkSession, SQLContext
-# from pyspark.context import SparkContext
-# import pyspark.sql.functions as sql_fun
+# ===================SparkSession===================
+import pyspark
+from pyspark.sql import SparkSession, SQLContext
+from pyspark.context import SparkContext
+import pyspark.sql.functions as sql_fun
 
-# conf = pyspark.SparkConf().set('spark.jars.packages','org.mongodb.spark:mongo-spark-connector_2.12:3.0.1')
-# sc = SparkContext(conf=conf).getOrCreate()
-# sqlContext = SQLContext(sc)
-# my_spark = SparkSession \
-#     .builder \
-#     .master('local')\
-#     .appName("myApp") \
-#     .config("spark.mongodb.input.uri", "mongodb://thwhd1:thwhd1@165.132.172.93/wanted.wanted?readPreference=primaryPreferred") \
-#     .config("spark.mongodb.output.uri", "mongodb://thwhd1:thwhd1@165.132.172.93/test.wanted") \
-#     .getOrCreate()
-# DF  = my_spark.read.format("mongo").option("uri","mongodb://165.132.172.93/wanted.wanted").load()
+conf = pyspark.SparkConf().set('spark.jars.packages','org.mongodb.spark:mongo-spark-connector_2.12:3.0.1')
+sc = SparkContext(conf=conf).getOrCreate()
+sqlContext = SQLContext(sc)
+my_spark = SparkSession \
+    .builder \
+    .master('local')\
+    .appName("myApp") \
+    .config("spark.mongodb.input.uri", mySettings.mongodbInputUri) \
+    .config("spark.mongodb.output.uri", mySettings.mongodbOutputUri) \
+    .getOrCreate()
+DF  = my_spark.read.format("mongo").option("uri",mySettings.mongodbCollectionDB).load()
 
 
-# from pyspark.sql.functions import explode, count, desc, countDistinct, lower, monotonically_increasing_id
-# temp = DF.select(explode(DF.skill_stacks).alias("skill"), "company_name")
-# skillCount = temp.groupBy("skill")\
-#                 .agg(count("skill").alias("skillCount"))\
-#                 .filter(temp.skill != "")\
-#                 .sort(desc("skillCount"))
-# skillCount.collect()
+from pyspark.sql.functions import explode, count, desc, countDistinct, lower, monotonically_increasing_id
+temp = DF.select(explode(DF.skill_stacks).alias("skill"), "company_name")
+skillCount = temp.groupBy("skill")\
+                .agg(count("skill").alias("skillCount"))\
+                .filter(temp.skill != "")\
+                .sort(desc("skillCount"))
+skillCount.collect()
 
-# companyCount = temp.groupBy("skill")\
-#             .agg(countDistinct("company_name").alias("companyCount"))\
-#             .filter(temp.skill != "")\
-#             .sort(desc("companyCount"))
-# companyCount.collect()                
-# JOINED_DF = skillCount.join(companyCount, ['skill'], 'outer')
-# JOINED_DF = JOINED_DF\
-#                     .filter(JOINED_DF.skill!="")\
-#                     .sort(desc("skillCount"))
-# JOINED_DF = JOINED_DF.withColumn("index", monotonically_increasing_id()+1)
+companyCount = temp.groupBy("skill")\
+            .agg(countDistinct("company_name").alias("companyCount"))\
+            .filter(temp.skill != "")\
+            .sort(desc("companyCount"))
+companyCount.collect()                
+JOINED_DF = skillCount.join(companyCount, ['skill'], 'outer')
+JOINED_DF = JOINED_DF\
+                    .filter(JOINED_DF.skill!="")\
+                    .sort(desc("skillCount"))
+JOINED_DF = JOINED_DF.withColumn("index", monotonically_increasing_id()+1)
