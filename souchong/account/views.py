@@ -49,7 +49,7 @@ def register_view(request):
                                             'uid': urlsafe_base64_encode(force_bytes(user.id)).encode().decode(),
                                             'token': account_activation_token.make_token(user),
                                        })
-            mail_subject = "[JonSight] 회원가입 인증 메일입니다."
+            mail_subject = "[JobSight] 회원가입 인증 메일입니다."
             user_email = account.email
             email = EmailMessage(mail_subject,message, to=[user_email])
             email.send()
